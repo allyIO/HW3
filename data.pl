@@ -1,3 +1,4 @@
+% City declarations.
 city(arad).
 city(bucharest).
 city(craiova).
@@ -19,8 +20,7 @@ city(urziceni).
 city(vaslui).
 city(zerind).
 
-edge(N0, N1, C):-
-    edge(N1, N0, C).
+% Edge declarations.
 edge(arad, sibiu, 140).
 edge(arad, timisoara, 118).
 edge(arad, zerind, 75).
@@ -44,7 +44,11 @@ edge(oradea, zerind, 71).
 edge(pitesti, rimnicu_vilcea, 97).
 edge(rimnicu_vilcea, sibiu, 80).
 edge(urziceni, vaslui, 142).
+% Edges are symmetric.
+edge(N0, N1, C):-
+    edge(N1, N0, C).
 
+% SLD to Bucharest declarations
 sld_bucharest(arad, 366).
 sld_bucharest(bucharest, 0).
 sld_bucharest(craiova, 160).
