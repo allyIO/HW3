@@ -1,4 +1,42 @@
 :- include('data.pl').
+
+
+/* Adi's Code for Finding Path Cost */
+               
+goal(bucharest).
+
+% Expand a node into its connected neighbors with costs.
+
+expand(Node, Children):- 
+    findall((Child, Cost), edge(Node, Child, Cost), Children).
+
+% Calculate the cost of a given path. 
+
+path_cost([_],0). % Base case: cost of single-node path is 0.
+path_cost([A, B | T], Cost):-
+    edge(A,B, C1), % Cost from A to B
+    path_cost([B | T], C2), % Cost from B to end of path
+    Cost is C1 + C2. % Total cost is sum of costs
+
+% Print a path and the cost.
+
+print_path(Path,Cost):-
+    write('Path: '), write(Path), nl,
+    write('Cost: '), write(Cost), nl, nl.
+
+% Running all searches
+
+run_all:- 
+    member(Start, [oradea,timisoara, neamt]), % 
+    write('Starting from '), write(Start), write(' to Bucharest'), nl,
+    /* bfs_search(Start, Path1, Cost1), print_path(Path1, Cost1), */
+    dfs_search(Start, Path2, Cost2), print_path(Path2, Cost2),
+    /* a_star_search(Start, Path3, Cost3), print_path(Path3, Cost3), */
+    nl, fail.
+
+/* End of Adi's Code for Finding Path Cost */
+
+
 /* For the predicate search(N0, P, C),
         there is a search path P from city N0 to 
         Bucharest that costs C.
