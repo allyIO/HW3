@@ -1,3 +1,4 @@
+:- include('data.pl').
 /* For the predicate search(N0, P, C),
         there is a search path P from city N0 to 
         Bucharest that costs C.
@@ -8,16 +9,18 @@
 /* Base case is that the start city is Bucharest,
     in which case the search path is simply [bucharest]
     and  the cost is 0. */
-% search(N0, [N0], 0):-
-%     N0 = bucharest.
+search(N0, P, C):-
+    N0 = bucharest,
+    P = [bucharest],
+    C = 0.
 
 /* Recursive: search again on all nodes that have an 
     edge with N0 until the base case of just Bucharest. */
-% search(N0, [N0|T], C):-
-%     T = [H|_],
-%     edge(N0, H, C1), 
-%     search(H, T, C2),
-%     C = C1 + C2.
+search(N0, [N0|T], C):-
+    T = [H|_],
+    edge(N0, H, C1), 
+    C = C1 + C2,
+    search(H, T, C2).
 
 
 
