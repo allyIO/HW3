@@ -128,3 +128,53 @@ bfs_search([[Node | Path] | Rest], Solution) :-
     append(Rest, NewPaths, NewRest),
     bfs_search(NewRest, Solution).
 
+/* Braden's code containing A* implementation */
+solve_a_star(Start, Path, Cost) :-
+    % Get the heuristic for the start node
+    sld_bucharest(Start, H_start),
+    
+    % F = G + H. G is 0 at the start.
+    F_start is 0 + H_start,
+    
+    % The initial queue: (F_score, G_score, Path)
+    InitialQueue = [(F_start, 0, [Start])],
+    
+    % Call the main search predicate
+    a_star_search(InitialQueue, RevPath),
+    
+    % Process the solution
+    reverse(RevPath, Path),
+    path_cost(Path, Cost).
+
+/* A* Search - Main Predicates */
+
+% Base Case: Found the goal!
+a_star_search([(_, _, [Goal | Path]) | _], [Goal | Path]) :-
+    Goal = bucharest.
+
+% Recursive Step: Expand the best node (front of queue)
+a_star_search([(_, G, [Node | Path]) | Rest], Solution) :-
+    findall(
+        (F_new, G_new, [Next, Node | Path]),
+        (
+            connected(Node, Next, Cost),
+            \+ member(Next, [Node | Path]), 
+            
+            % A* Calculations
+            G_new is G + Cost,
+            
+            % h(n): Get the heuristic value for the neighbor
+            sld_bucharest(Next, H_new),
+            
+            % f(n) = g(n) + h(n)
+            F_new is G_new + H_new
+        ),
+        NewTuples
+    ),
+    
+    append(Rest, NewTuples, UnsortedQueue),
+    
+    % Sort queue by F_score
+    keysort(UnsortedQueue, NewRest),
+    
+    a_star_search(NewRest, Solution).
