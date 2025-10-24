@@ -175,6 +175,6 @@ a_star_search([(_, G, [Node | Path]) | Rest], Solution) :-
     append(Rest, NewTuples, UnsortedQueue),
     
     % Sort queue by F_score
-    keysort(UnsortedQueue, NewRest),
+    sort(UnsortedQueue, NewRest),
     
     a_star_search(NewRest, Solution).
