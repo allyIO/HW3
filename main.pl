@@ -12,9 +12,9 @@ expand(Node, Children):-
 
 % Calculate the cost of a given path. 
 
-path_cost([_],0). % Base case: cost of single-node path is 0.
-path_cost([A, B | T], Cost):-
-    edge(A,B, C1), % Cost from A to B
+path_cost([_], 0). % Base case: cost of single-node path is 0.
+path_cost([A, B | T], Cost) :-
+    ( connected(A, B, C1) ; connected(B, A, C1) ),
     path_cost([B | T], C2), % Cost from B to end of path
     Cost is C1 + C2. % Total cost is sum of costs
 
@@ -29,9 +29,9 @@ print_path(Path,Cost):-
 run_all:- 
     member(Start, [oradea,timisoara, neamt]), % 
     write('Starting from '), write(Start), write(' to Bucharest'), nl,
-    /* bfs_search(Start, Path1, Cost1), print_path(Path1, Cost1), */
-    dfs_search(Start, Path2, Cost2), print_path(Path2, Cost2),
-    /* a_star_search(Start, Path3, Cost3), print_path(Path3, Cost3), */
+    once(solve_bfs(Start, Path1, Cost1)), print_path(Path1, Cost1),
+    /* once(dfs_search(Start, Path2, Cost2)), print_path(Path2, Cost2), */
+    /* once(a_star_search(Start, Path3, Cost3)), print_path(Path3, Cost3), */
     nl, fail.
 
 /* End of Adi's Code for Finding Path Cost */
@@ -103,3 +103,28 @@ dfs_enqueue(N, Q0, Q):-
     Q = [Children|Q0].
 
 % findall(city, edge(_, city), Children).
+
+
+/* Breadth-First Search Implementation */
+% Start a BFS from Start, return Path and its total Cost
+% Paths are represented as reversed lists during search
+solve_bfs(Start, Path, Cost) :-
+    % Find a solution path, reverse it and compute cost
+    bfs_search([[Start]], RevPath),
+    reverse(RevPath, Path),
+    path_cost(Path, Cost).
+
+% First path in the queue reaches the goal which is always bucharest
+bfs_search([[Goal | Path] | _], [Goal | Path]) :-
+    Goal = bucharest.
+
+% Take first path, expand current node to generate new paths, append these to the end of the queue, and repeat 
+bfs_search([[Node | Path] | Rest], Solution) :-
+    findall([Next, Node | Path],
+            ( connected(Node, Next, _),         
+              \+ member(Next, [Node | Path])   
+            ),
+            NewPaths),
+    append(Rest, NewPaths, NewRest),
+    bfs_search(NewRest, Solution).
+
