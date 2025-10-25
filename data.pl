@@ -45,8 +45,8 @@ edge(pitesti, rimnicu_vilcea, 97).
 edge(rimnicu_vilcea, sibiu, 80).
 edge(urziceni, vaslui, 142).
 % Edges are symmetric.
-edge(N0, N1, C):-
-    edge(N1, N0, C).
+edgeTo(N0, N1, C):-
+    edge(N0, N1, C); edge(N1, N0, C).
 
 % SLD to Bucharest declarations
 sld_bucharest(arad, 366).
