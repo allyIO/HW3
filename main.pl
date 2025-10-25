@@ -30,7 +30,7 @@ run_all:-
     member(Start, [oradea,timisoara, neamt]), % 
     write('Starting from '), write(Start), write(' to Bucharest'), nl,
     once(solve_bfs(Start, Path1, Cost1)), print_path(Path1, Cost1),
-    /* once(dfs_search(Start, Path2, Cost2)), print_path(Path2, Cost2), */
+    once(solve_dfs(Start, Path2, Cost2)), print_path(Path2, Cost2),
     once(solve_a_star(Start, Path3, Cost3)), print_path(Path3, Cost3), 
     nl, fail.
 
